@@ -1,0 +1,44 @@
+.left-column {
+	width: 35%;
+	height: 1px;
+	float: left;
+}
+
+.login-container {
+	width: 30%;
+	float: left;
+	position: relative;
+	background: -webkit-linear-gradient(top, #888 0%,#fff 30%);
+	box-shadow: 3px 3px 5px #666;
+	padding: 12px;
+}
+
+.login-container-title {
+	float: top;
+	position: relative;
+}
+
+.login-container-title > h2 {
+	background-color: #ccc;
+	float: left;
+	padding: 8px 16px;
+	position: relative;
+	top: -18px;
+	left: -21px;
+	-webkit-transform: rotate(-2deg);
+	font: bold 18px sans-serif;
+}
+
+.input-container {
+	position: relative;
+	float: top;
+}
+
+.login-inputs {
+	padding: 2px;
+}
+
+.login-button {
+	position: relative;
+	float: right;
+}
