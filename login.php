@@ -4,7 +4,7 @@ session_start();
 
 $title = "Tomboy Sync Login";
 
-error_log("Session Data: ".print_r($_SESSION, true));
+Logger::log("Session Data: ".print_r($_SESSION, true), LOG_DEBUG);
 
 if(isset($_SESSION['authenticated']) && ($_SESSION['authenticated'] == true) &&
    isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {

@@ -2,7 +2,6 @@
 
 class MySQLAdapter {
 	protected static $_instance;
-	protected $_dsn = "mysql://tomboy:tomboyIncremental@localhost/tomsync";
 	protected $_result;
 	protected $_creds;
 	protected $_connection;
@@ -16,23 +15,18 @@ class MySQLAdapter {
 	}
 
 	protected function __construct() {
-		if(!$this->_dsn) {
-			echo "Bad connection string\n";
-			die;
-		}
-		$this->_creds = parse_url($this->_dsn);
 		$this->_result = null;
 		$this->_connection = null;
 	}
 
 	public function connect() {
 		if($this->_connection === null) {
-			$host = $this->_creds['host'];
-			$user = $this->_creds['user'];
-			$pass = $this->_creds['pass'];
-			$path = $this->_creds['path'];
-			if(!$this->_connection = mysqli_connect($host, $user, $pass, basename($path))) {
-				echo "Error on connecting to DB".mysqli_connect_error()."\n";
+			if(!$this->_connection = mysqli_connect(SiteConfig::$db_host,
+								SiteConfig::$user,
+								SiteConfig::$pass,
+								SiteConfig::$db_name)) {
+				Logger::log("Error on connecting to DB".mysqli_connect_error()."\n", LOG_ERR);
+				echo "Error Connecting to DB");
 				return false;
 			}
 		}
@@ -41,14 +35,14 @@ class MySQLAdapter {
 
 	public function query($query) {
 		if((!is_string($query)) || (empty($query))) {
-			error_log("Query is invalid\n");
+			Logger::log("Query is invalid\n", LOG_ERR);
 			return false;
 		}
 		if(!$this->connect()) {
 			return false;
 		}
 		if(!$this->_result = mysqli_query($this->_connection, $query)) {
-			error_log("Query error: ".mysqli_error($this->_connection)."\n");
+			Logger::log("Query error: ".mysqli_error($this->_connection)."\n", LOG_ERR);
 			$this->_result = null;
 			return false;
 		}

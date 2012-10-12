@@ -29,7 +29,7 @@ class User {
 
 	protected function _fillUserData() {
 		if(!$result = $this->_db->fetch()) {
-			error_log("User Data Unavailable");
+			Logger::log("User Data Unavailable", LOG_WARN);
 			return false;
 		}
 		$this->_user_id = $result['id'];
@@ -67,7 +67,7 @@ class User {
 		}
 		$query = "SELECT * from users WHERE id=$id;";
 		if(!$this->_db->query($query)) {
-			error_log("Query error: ".$this->_db->getError()."\n");
+			Logger::log("Query error: ".$this->_db->getError()."\n", LOG_ERR);
 			$this->_db->freeResult();
 			return false;
 		}
@@ -106,7 +106,7 @@ class User {
 			$this->_db = MySQLAdapter::getInstance();
 		}
 		if(!$this->_db->query($query)) {
-			error_log("Error incrementing Sync Revision for user: ".$this->_db->getError());
+			Logger::log("Error incrementing Sync Revision for user: ".$this->_db->getError(), LOG_ERR);
 			return false;
 		}
 		return $this->_sync_revision;

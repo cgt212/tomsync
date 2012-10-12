@@ -15,7 +15,7 @@ class Tags {
 		if($this->_tags == null) {
 			$query = "SELECT * FROM tags WHERE note_id=".$this->_note->getNoteID().";";
 			if(!$this->_db->query($query)) {
-				error_log("Tag Query failed".$this->_db->getError());
+				Logger::log("Tag Query failed".$this->_db->getError(), LOG_ERR);
 				return false;
 			}
 			$this->_tags = array();
@@ -52,7 +52,7 @@ class Tags {
 		}
 		$query .= implode(", ", $args).";";
 		if(!$this->_db->query($query)) {
-			error_log("Failed to save tags".$this->_db->getError());
+			Logger::log("Failed to save tags".$this->_db->getError(), LOG_ERR);
 			return false;
 		}
 		return true;

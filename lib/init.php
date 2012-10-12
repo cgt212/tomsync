@@ -1,6 +1,7 @@
 <?
 
 require_once 'user.php';
+require_once '../config/config.php';
 
 session_start();
 $user = null;
@@ -22,14 +23,10 @@ function _check_authentication() {
 	return $user;
 }
 
-$DB_DSN = "mysql://tomboy:tomboyIncremental@localhost/tomsync";
-$info = parse_url($DB_DSN);
-($GLOBALS['db_conn'] = mysql_connect($info['host'], $info['user'], $info['pass'])) || die(mysql_error());
-mysql_select_db(basename($info['path']), $GLOBALS['db_conn']) || die(mysql_error());
-unset($info);
+$db_conn = mysqli_connect(Config::$db_host, Config::$db_user, Config::$db_pass) || die(mysqli_error());
 
 require_once 'oauth/OAuthStore.php';
-$store = OAuthStore::instance('MySQL', array('conn' => $GLOBALS['db_conn']));
+$store = OAuthStore::instance('MySQL', array('conn' => $db_conn));
 
 require_once 'oauth/OAuthServer.php';
 $server = new OAuthServer();

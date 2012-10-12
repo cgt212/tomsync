@@ -44,7 +44,7 @@ class URLizer {
 			return false;
 		}
 		if(!$result = $this->_db->fetch()) {
-			error_log("URL Data Unavailable");
+			Logger::log("URL Data Unavailable", LOG_ERR);
 			return false;
 		}
 		if($this->_db->countRows() > 0) {

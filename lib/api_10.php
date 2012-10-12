@@ -1,38 +1,37 @@
 <?php
 
-$oauth_root = "/tomsync/oauth";
-$api_url = "/tomsync/api/1.0";
+$base_url = SiteConfig::$protocol.SiteConfig::$server_name."/".SiteConfig::$url_base;
+$api_uri = "/api/1.0/";
 
 function api_10_root($user) {
-	global $oauth_root, $api_url;
-	$url_host = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
-	$url_host .= $_SERVER['SERVER_NAME'];
+	global $api_uri, $base_url;
 	if($user != null) {
-		$ret['user-ref'] = array(	'api-ref' => $url_host.$api_url."/".$user->getUsername(),
-						'href' => $url_host.$api_url."/user/".$user->getUsername());
+		$ret['user-ref'] = array(
+			'api-ref' => $base_url.$api_uri.$user->getUsername(),
+			'href' => $base_url."/notes/".$user->getUsername());
 	}
-	$ret["oauth_request_token_url"] = $url_host.$oauth_root."/request_token";
-	$ret["oauth_authorize_url"] = $url_host.$oauth_root."/authorize";
-	$ret["oauth_access_token_url"] = $url_host.$oauth_root."/access_token";
+	$oauth_url = $base_url."/".SiteConfig::$oauth_dir;
+	$ret["oauth_request_token_url"] = $oauth_url."/request_token";
+	$ret["oauth_authorize_url"] = $oauth_url."/authorize";
+	$ret["oauth_access_token_url"] = $oauth_url."/access_token";
 	$ret["api-version"] = "1.0";
 	header('Content-type: text/json');
 	echo json_encode($ret);
 }
 
 function api_10_user($user) {
-	global $oauth_root, $api_url;
-	$url_host = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
-	$url_host .= $_SERVER['SERVER_NAME'];
+	global $api_uri, $base_url;
 	if($user == null) {
-		error_log("Empty user trying to access user API - Problem");
+		Logger::log("Empty user trying to access user API - Problem", LOG_ERR);
 		echo "Authntication required\n";
 		return false;
 	}
+	$base_url = SiteConfig::$protocol.SiteConfig::$server_name."/".SiteConfig::$url_base;
 	$ret['user-name'] = $user->getUsername();
 	$ret['first-name'] = $user->getFirstName();
 	$ret['last-name'] = $user->getLastName();
-	$ret['notes-ref'] = array(	'api-ref' => $url_host.$api_url."/".$user->getUsername()."/notes",
-					'href' => $url_host."/user/".$user->getUsername()."/notes");
+	$ret['notes-ref'] = array(	'api-ref' => $base_url.$api_uri.$user->getUsername()."/notes",
+					'href' => $base_url."/notes/".$user->getUsername()."/notes");
 	$ret['latest-sync-revision'] = $user->getLatestSyncRevision();
 	$ret['current-sync-guid'] = $user->getSyncUUID();
 
@@ -45,17 +44,14 @@ function api_10_notes($user) {
 
 	require_once 'notestore.php';
 
-	global $oauth_root, $api_url;
+	global $api_uri, $base_url;
 	$store = new NoteStore($user);
 	$since = 0;
 	$content = false;
 	$ret = array();
 
-	$url_host = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
-	$url_host .= $_SERVER['SERVER_NAME'];
-
 	if($user == null) {
-		error_log("Empty user trying to access notes API - Should have been detected");
+		Logger::log("Empty user trying to access notes API - Should have been detected", LOG_ERR);
 		echo "Authentication Required";
 		return false;
 	}
@@ -85,7 +81,7 @@ function api_10_notes($user) {
 		fclose($out);
 		if(isset($change_list['latest-sync-revision']) &&
 		  $change_list['latest-sync-revision'] != $user->getLatestSyncRevision() + 1) {
-			error_log("Out of sync - don't know how to recover from this error");
+			  Logger::log("Out of sync - don't know how to recover from this error", LOG_ERR);
 			echo "Sync error";
 			exit;
 		}
@@ -94,7 +90,7 @@ function api_10_notes($user) {
 			$change = (array) $c;
 			$note = $store->findNoteByGUID($change['guid']);
 			if(isset($change['command']) && ($change['command'] == "delete")) {
-				error_log("Deleting note: ".$note->getGUID());
+				Logger::log("Deleting note: ".$note->getGUID(), LOG_DEBUG);
 				$note->delete();
 				continue;
 			} else {
@@ -107,7 +103,7 @@ function api_10_notes($user) {
 		header('Content-type: text/json');
 		echo json_encode($ret);
 	} else {
-		error_log("Invalid request method on notes API");
+		Logger::log("Invalid request method on notes API", LOG_WARN);
 		echo "Invalid request type";
 		return false;
 	}

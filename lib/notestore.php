@@ -24,11 +24,11 @@ class NoteStore {
 
 		if(!$this->_db->query($query)) {
 			$this->_db->freeResult();
-			error_log("Note query failed ".$this->_db->getError()."\n");
+			Logger::log("Note query failed ".$this->_db->getError()."\n", LOG_ERR);
 			return false;
 		}
 
-		error_log("Query returned ".$this->_db->countRows()." results");
+		Logger::log("Query returned ".$this->_db->countRows()." results", LOG_DEBUG);
 
 		while($row = $this->_db->fetch()) {
 			$this->_notes[$row['id']] = new Note($this->_user);
@@ -58,7 +58,7 @@ class NoteStore {
 	function findNoteByGUID($guid) {
 		$query = "SELECT * FROM notes WHERE user_id=".$this->_user->getUID()." AND guid='$guid' AND deleted=false;";
 		if(!$this->_db->query($query)) {
-			error_log("DB error for guid: ".$this->_db->getError());
+			Logger::log("DB error for guid: ".$this->_db->getError(), LOG_ERR);
 			return false;
 		}
 		$ret = new Note($this->_user);

@@ -24,7 +24,7 @@ if(OAuthRequestVerifier::requestIsSigned()) {
 		$user_id = $server->verify();
 		$user = new User();
 		if(!$user->findByUID($user_id)) {
-			error_log("There was an error locating the user with ID: $user_id\n");
+			Logger::log("There was an error locating the user with ID: $user_id\n", LOG_WARN);
 			header('HTTP/1.1 401 Unauthorized');
 			header('WWW-Authenticate: OAuth realm=""');
 			header('Content-Type: text/plain; charset=utf8');
@@ -33,7 +33,7 @@ if(OAuthRequestVerifier::requestIsSigned()) {
 		}
 	} catch(OAuthException2 $e) {
 		//There is a problem with the OAuth Signature
-		error_log("API  Request: ".$e->getMessage()."\n");
+		Logger::log("API  Request: ".$e->getMessage()."\n", LOG_ERR);
 		header('HTTP/1.1 401 Unauthorized');
 		header('WWW-Authenticate: OAuth realm=""');
 		header('Content-Type: text/plain; charset=utf8');
@@ -44,7 +44,6 @@ if(OAuthRequestVerifier::requestIsSigned()) {
 
 $path = _path_splitter();
 $depth = count($path);
-error_log(print_r($path, true));
 $start = 0;
 while($path[$start] != 'api')
 	$start++;
@@ -62,23 +61,23 @@ if($depth == 1) {
 				// Root API call
 				api_10_root($user);
 			} else if($user != null && $depth == 3) {
-				error_log("Calling on User API...\n");
+				Logger::log("Calling on User API...\n", LOG_DEBUG);
 				if(!api_10_user($user)) {
-					error_log("There was a failure in the execution of the User API\n");
+					Logger::log("There was a failure in the execution of the User API\n", LOG_ERR);
 				} else {
-					error_log("User API Completed Successfully\n");
+					Logger::log("User API Completed Successfully\n", LOG_DEBUG);
 				}
 			} else if($user != null && $depth == 4) {
-				error_log("Reached Notes API\n");
+				Logger::log("Reached Notes API\n", LOG_DEBUG);
 				api_10_notes($user);
 			} else if($user != null && $depth == 5) {
 				api_10_note($user, $path[4 + $start]);
 			} else {
 				if($user == null) {
-					error_log("User not logged in while trying to access API\n");
+					Logger::log("User not logged in while trying to access API\n", LOG_WARN);
 					echo "Authentication required\n";
 				} else {
-					error_log("Too many arguments for the 1.0 API\n");
+					Logger::log("Too many arguments for the 1.0 API\n", LOG_WARN);
 					echo "Incorrect argument count";
 				}
 			}

@@ -35,25 +35,6 @@ class Note {
 		$url .= strtolower($this->_note['title']);
 		$this->_url = $url;
 	}
-/*
-	static function loadNoteByGUID($user, $guid) {
-		$query = "SELECT * FROM notes WHERE guid='$guid' AND user_id=".$user->getUID();
-		$query .= " AND deleted=false;";
-		if(!$this->_db->query($query)) {
-			error_log("Error Finding Note by GUID: ".$this->_db->getError());
-			return false;
-		}
-		if($this->_db->countRows() == 0) {
-			$this->_db->freeResult();
-			return false;
-		}
-		$ret = new Note($user);
-		$ret->loadNoteDataFromDB($this->_db->fetch());
-		$this->_db->freeResult();
-		$this->loadTags();
-		return $ret;
-	}
- */
 
 	function loadTags() {
 		if($this->_tags != null)
@@ -61,20 +42,7 @@ class Note {
 		$this->_tags = new Tags($this);
 		$this->_tags->loadTags();
 	}
-/*
-	function updateNote($data) {
-		foreach($data as $k => $v) {
-			if($k == 'tags') {
-				$this->_tags = new Tags($this);
-				foreach ($v as $tag) {
-					$this->_tags->addTag($tag);
-				}
-				$this->_note[$k] = $v;
-			}
-		}
-		$this->save();
-	}
- */
+
 	function loadNoteDataFromDB($note) {
 		foreach($note as $k => $v) {
 			if($k == 'tags')
@@ -103,8 +71,8 @@ class Note {
 		$this->_tags->loadTags();
 		 */
 
-		$url_host = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
-	        $url_host .= $_SERVER['SERVER_NAME'];
+		$url_host = SiteConfig::$protocol.SiteConfig::$server_name."/".SiteConfig::$url_root_dir;
+		//TODO: Fix the API reference here - it should not be set to 1.0
 		$this->_note['ref'] = array(
 			'api-ref' => $url_host."/api/1.0/".$this->_user->getUsername()."/notes/".$this->_id,
 			'href' => $url_host."/user/".$this->_user->getUsername()."/notes/".$this->_id."/".strtolower(str_replace(' ', '-', $this->_note['title'])));
@@ -194,12 +162,12 @@ class Note {
 	function delete() {
 		$this->_db = MySQLAdapter::getInstance();
 		if(!$this->_db->connect()) {
-			error_log("Database connection error when tring to delete note\n");
+			Logger::log("Database connection error when tring to delete note\n", LOG_ERR);
 			return false;
 		}
 		$query = "UPDATE notes SET deleted=true WHERE guid='".$this->_note['guid']."';";
 		if(!$this->_db->query($query)) {
-			error_log("Error deleting note: ".$this->_db->getError()."\n");
+			Logger::log("Error deleting note: ".$this->_db->getError()."\n", LOG_ERR);
 			return false;
 		}
 		return true;
@@ -211,21 +179,11 @@ class Note {
 		}
 		$this->_db = MySQLAdapter::getInstance();
 		if(!$this->_db->connect()) {
-			error_log("Database connection error when tring to save note\n");
+			Logger::log("Database connection error when tring to save note\n", LOG_ERR);
 			return false;
 		}
 		$fields = array();
 		$values = array();
-		/* Trade this for individual entries
-		foreach ($this->_note as $k => $v) {
-			if($k == "ref") {
-				continue;
-			}
-			$f = str_replace('-', '_', $k);
-			array_push($fields, $f);
-			array_push($values, $v);
-		}
-		 */
 		array_push($fields, "last_sync_revision");
 		array_push($values, $this->_user->getLatestSyncRevision());
 		if(isset($this->_note['guid'])) {
@@ -300,19 +258,19 @@ class Note {
 		}
 
 		if(!$this->_db->query($query)) {
-			error_log("Database error on note insert/update: ".$this->_db->getError()."\n");
+			Logger::log("Database error on note insert/update: ".$this->_db->getError()."\n", LOG_ERR);
 			return false;
 		}
 		if($this->_id < 0) {
 			$query = "SELECT id FROM notes WHERE guid='".$this->_note['guid']."';";
 			if(!$this->_db->query($query)) {
-				error_log("Database error on getting note id: ".$this->_db->getError()."\n");
+				Logger::log("Database error on getting note id: ".$this->_db->getError()."\n", LOG_ERR);
 				$this->_db->freeResult();
 				return false;
 			}
 			//There must be at least 1 row
 			if($this->_db->countRows() < 1) {
-				error_log("Database error on getting note id: There was nothing returned\n");
+				Logger::log("Database error on getting note id: There was nothing returned\n", LOG_ERR);
 				$this->_db->freeResult();
 				return false;
 			}
