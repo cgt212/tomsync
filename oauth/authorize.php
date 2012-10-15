@@ -12,7 +12,7 @@ try {
 		error_log(print_r($rs, true));
 		if(!$user->findByUID($store->getUIDfromToken($rs['token']))) {
 			error_log("Unable to find user");
-			$uri = "/tomsync/login";
+			$uri = SiteConfig::$url_root_dir."/login";
 			if(!empty($_REQUEST['goto']))
 				$uri .= "?goto=".urlencode($_POST['goto']);
 			header("Location: ".$uri);
@@ -26,7 +26,7 @@ try {
 	}
 } catch(OAuthException $oe) {
 	error_log("OAuth Exception: $oe");
-	header("Location: /tomsync/login");
+	header("Location: ".SiteConfig::$url_root_dir."/login");
 	die;
 }
 

@@ -14,11 +14,11 @@ function _check_authentication() {
 	if(isset($_SESSION['authenticated']) && ($_SESSION['authenticated'] == true)) {
 		$user = new User();
 		if(!$user->findByUID($_SESSION['user_id'])) {
-			header("Location: /tomsync/login?goto=".urlencode($_SERVER['REQUEST_URI']));
+			header("Location: ".SiteConfig::$url_root_dir."/login?goto=".urlencode($_SERVER['REQUEST_URI']));
 			die;
 		}
 	} else if(!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] == false) {
-		header("Location: /tomsync/login?goto=".urlencode($_SERVER['REQUEST_URI']));
+		header("Location: ".SiteConfig::$url_root_dir."/login?goto=".urlencode($_SERVER['REQUEST_URI']));
 		die;
 	}
 	return $user;

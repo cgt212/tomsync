@@ -43,10 +43,8 @@ class NoteStore {
 	function getNoteList($content, $since = -1) {
 		$ret = array();
 		foreach ($this->_notes as &$note) {
-			if(($note->getLatestSyncRevision() <= $since) && ($since != 0)) {
-				continue;
-			}
-			array_push($ret, $note->getArray($content));
+			if($note->getLatestSyncRevision() > $since)
+				array_push($ret, $note->getArray($content));
 		}
 		return $ret;
 	}

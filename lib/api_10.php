@@ -79,7 +79,7 @@ function api_10_notes($user) {
 		$change_list = (array) $changes;
 		if(isset($change_list['latest-sync-revision']) &&
 		  $change_list['latest-sync-revision'] != $user->getLatestSyncRevision() + 1) {
-			  Logger::log("Out of sync - don't know how to recover from this error", LOG_ERR);
+			Logger::log("Out of sync - don't know how to recover from this error", LOG_ERR);
 			echo "Sync error";
 			exit;
 		}
