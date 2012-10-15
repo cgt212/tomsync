@@ -1,0 +1,16 @@
+Tomboy Sync Server
+
+Installation
+
+1) Create a database using mysql, 
+    mysql> CREATE DATABASE tomsync;
+
+2) Create a user for the application to access the database:
+    mysql> GRANT ALL ON tomsync.* TO username identified by 'password';
+    mysql> FLUSH PRIVILEGES;
+
+3) Create a siteconfig.php file to override the config file for local settings like database settings.
+
+class SiteConfig extends Config {
+  // Put options here
+}
