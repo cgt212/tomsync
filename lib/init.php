@@ -25,7 +25,6 @@ function _check_authentication() {
 }
 
 $db_conn = mysql_connect(SiteConfig::$db_host, SiteConfig::$db_user, SiteConfig::$db_pass);
-Logger::log(print_r($db_conn, true));
 if(!$db_conn) {
 	Logger::log("DB error: ".mysql_error());
 	die;
