@@ -1,16 +1,5 @@
 <?php
 
-/* Schema
- * Table name oauth_user
- * id integerprimary_key auto_increment
- * username varchar(255)
- * password SHA1
- * first_name VARCHAR(64)
- * last_name VARCHAR(64)
- * latest_sync_revision INTEGER(11)
- * current_sync_guid VARCHAR(36)
- */
-
 include_once("db.php");
 
 class User {

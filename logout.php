@@ -6,6 +6,6 @@ _check_authentication();
 
 session_destroy();
 
-header("Location: /tomsync/login");
+header("Location: ".SiteConfig::$url_root_dir."/login");
 
 ?>

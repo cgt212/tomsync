@@ -71,7 +71,7 @@ class Note {
 		$this->_tags->loadTags();
 		 */
 
-		$url_host = SiteConfig::$protocol.SiteConfig::$server_name."/".SiteConfig::$url_root_dir;
+		$url_host = SiteConfig::$protocol.$_SERVER['SERVER_NAME']."/".SiteConfig::$url_root_dir;
 		//TODO: Fix the API reference here - it should not be set to 1.0
 		$this->_note['ref'] = array(
 			'api-ref' => $url_host."/api/1.0/".$this->_user->getUsername()."/notes/".$this->_id,

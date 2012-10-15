@@ -1,10 +1,11 @@
 <?php
 
+require_once 'config/siteconfig.php';
+require_once 'lib/logger.php';
+
 session_start();
 
 $title = "Tomboy Sync Login";
-
-Logger::log("Session Data: ".print_r($_SESSION, true), LOG_DEBUG);
 
 if(isset($_SESSION['authenticated']) && ($_SESSION['authenticated'] == true) &&
    isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
@@ -14,7 +15,7 @@ if(isset($_SESSION['authenticated']) && ($_SESSION['authenticated'] == true) &&
 		unset($_SESSION['user_id']);
 		unset($_SESSION['authenticated']);
 		unset($_SESSION['username']);
-		$uri = "/tomsync/login";
+		$uri = SiteConfig::$url_root_dir."/login";
 		if(!empty($_REQUEST['goto'])) {
 			$uri .= "?goto=".urlencode($_REQUEST['goto']);
 		}
@@ -24,7 +25,7 @@ if(isset($_SESSION['authenticated']) && ($_SESSION['authenticated'] == true) &&
 	if(!empty($_REQUEST['goto'])) {
 		header("Location: .".$_REQUEST['goto']);
 	} else {
-		header('Location: /tomsync/dashboard');
+		header('Location: '.SiteConfig::$url_root_dir.'/dashboard');
 	}
 	die;
 }
@@ -40,7 +41,7 @@ if(isset($_POST['username']) && isset($_POST['password'])) {
 		if(!empty($_REQUEST['goto'])) {
 			header('Location: '.$_REQUEST['goto']);
 		} else {
-			header('Location: '.'/tomsync/dashboard');
+			header('Location: '.SiteConfig::$url_root_dir.'/dashboard');
 		}
 		die;
 	} else {
@@ -53,7 +54,7 @@ if(isset($_POST['username']) && isset($_POST['password'])) {
 <HTML>
   <head>
     <title><? echo $title." Page" ?></title>
-    <link rel="stylesheet" type="text/css" href="/tomsync/css/login.css" />
+    <link rel="stylesheet" type="text/css" href="<?= SiteConfig::$url_root_dir ?>/css/login.css" />
   </head>
   <body>
     <div class="left-column"></div>

@@ -19,14 +19,18 @@ class MySQLAdapter {
 		$this->_connection = null;
 	}
 
+	public function getConnection() {
+		return $this->_connection;
+	}
+
 	public function connect() {
 		if($this->_connection === null) {
 			if(!$this->_connection = mysqli_connect(SiteConfig::$db_host,
-								SiteConfig::$user,
-								SiteConfig::$pass,
+								SiteConfig::$db_user,
+								SiteConfig::$db_pass,
 								SiteConfig::$db_name)) {
 				Logger::log("Error on connecting to DB".mysqli_connect_error()."\n", LOG_ERR);
-				echo "Error Connecting to DB");
+				echo "Error Connecting to DB";
 				return false;
 			}
 		}

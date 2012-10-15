@@ -1,6 +1,6 @@
 <?
 
-require_once '../lib/init.php';
+require_once __DIR__.'/../lib/init.php';
 
 _check_authentication();
 

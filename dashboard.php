@@ -32,19 +32,21 @@ require_once 'lib/oauth-web-utils.php';
 
 _check_authentication();
 
+global $store;
+
 ?>
 
 <html>
   <head>
     <title>User OAuth Dashboard</title>
-    <link rel="stylesheet" type="text/css" href="/tomsync/css/tabs.css">
-    <link rel="stylesheet" type="text/css" href="/tomsync/css/style.css">
-    <script type="text/javascript" src="/tomsync/js/jquery-1.8.2.min.js"></script>
-    <script type="text/javascript" src="/tomsync/js/script.js"></script>
+    <link rel="stylesheet" type="text/css" href="<?= SiteConfig::$url_root_dir ?>/css/tabs.css">
+    <link rel="stylesheet" type="text/css" href="<?= SiteConfig::$url_root_dir ?>/css/style.css">
+    <script type="text/javascript" src="<?= SiteConfig::$url_root_dir ?>/js/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="<?= SiteConfig::$url_root_dir ?>/js/script.js"></script>
   </head>
   <body>
   <div class="commands">
-    <a href="/tomsync/logout">Logout</a>
+    <a href="<?= SiteConfig::$url_root_dir ?>/logout">Logout</a>
   </div>
   <div id="tabs">
     <ul class="tablist">

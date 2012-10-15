@@ -16,8 +16,8 @@ function _path_splitter() {
 
 //Check OAuth validation here so that it is covered for the rest of the script
 $user = null;
-$server = new OAuthServer();
-$store = OAuthStore::instance("MySQL", array('conn' => $GLOBALS['db_conn']));
+//$server = new OAuthServer();
+//$store = OAuthStore::instance("MySQL", array('conn' => $GLOBALS['db_conn']));
 
 if(OAuthRequestVerifier::requestIsSigned()) {
 	try {

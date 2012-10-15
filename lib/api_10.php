@@ -1,6 +1,8 @@
 <?php
 
-$base_url = SiteConfig::$protocol.SiteConfig::$server_name."/".SiteConfig::$url_base;
+require_once __DIR__.'/../config/siteconfig.php';
+
+$base_url = SiteConfig::$protocol.$_SERVER['SERVER_NAME'].SiteConfig::$url_root_dir;
 $api_uri = "/api/1.0/";
 
 function api_10_root($user) {
@@ -26,7 +28,7 @@ function api_10_user($user) {
 		echo "Authntication required\n";
 		return false;
 	}
-	$base_url = SiteConfig::$protocol.SiteConfig::$server_name."/".SiteConfig::$url_base;
+	$base_url = SiteConfig::$protocol.$_SERVER['SERVER_NAME']."/".SiteConfig::$url_root_dir;
 	$ret['user-name'] = $user->getUsername();
 	$ret['first-name'] = $user->getFirstName();
 	$ret['last-name'] = $user->getLastName();
@@ -73,12 +75,8 @@ function api_10_notes($user) {
 		$updates = "";
 		$updates = file_get_contents("php://input");
 
-		$out = fopen("/tmp/oauth_output", 'w');
-		fwrite($out, $updates);
 		$changes = json_decode($updates);
 		$change_list = (array) $changes;
-		fwrite($out, "\n\n".print_r($change_list, true));
-		fclose($out);
 		if(isset($change_list['latest-sync-revision']) &&
 		  $change_list['latest-sync-revision'] != $user->getLatestSyncRevision() + 1) {
 			  Logger::log("Out of sync - don't know how to recover from this error", LOG_ERR);

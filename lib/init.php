@@ -1,7 +1,8 @@
 <?
 
 require_once 'user.php';
-require_once '../config/config.php';
+require_once 'logger.php';
+require_once __DIR__.'/../config/siteconfig.php';
 
 session_start();
 $user = null;
@@ -23,7 +24,13 @@ function _check_authentication() {
 	return $user;
 }
 
-$db_conn = mysqli_connect(Config::$db_host, Config::$db_user, Config::$db_pass) || die(mysqli_error());
+$db_conn = mysql_connect(SiteConfig::$db_host, SiteConfig::$db_user, SiteConfig::$db_pass);
+Logger::log(print_r($db_conn, true));
+if(!$db_conn) {
+	Logger::log("DB error: ".mysql_error());
+	die;
+}
+mysql_select_db(SiteConfig::$db_name, $db_conn);
 
 require_once 'oauth/OAuthStore.php';
 $store = OAuthStore::instance('MySQL', array('conn' => $db_conn));
