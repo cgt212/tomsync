@@ -122,6 +122,14 @@ CREATE TABLE `oauth_server_registry` (
   KEY `osr_usa_id_ref` (`osr_usa_id_ref`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `oauth_server_token_description` (
+  `id` int(11) NOT NULL auto_increment,
+  `ost_id` int(11) NOT NULL,
+  `ost_description` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ost_id_ref` (`ost_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `oauth_server_token` (
   `ost_id` int(11) NOT NULL auto_increment,
   `ost_osr_id_ref` int(11) NOT NULL,
