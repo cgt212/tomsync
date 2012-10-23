@@ -1,30 +1,24 @@
 <?php
+
 /*
-require_once 'lib/user.php';
-
-session_start();
-$user = null;
-
-if(isset($_SESSION['authenticated']) && ($_SESSION['authenticated'] == true)) {
-	//We know that there is no user
-	$user = new User();
-	if(!$user->findByUID($_SESSION['user_id'])) {
-		header("Location: /login?goto=".urlencode($_SERVER['REQUEST_URI']));
-		die;
-	}
-} else if(!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] == false) {
-	header("Location: /login?goto=".urlencode($_SERVER['REQUEST_URI']));
-	die;
-}
-
-$DB_DSN = "mysql://authing:OAuthBites@localhost/oauth";
-$info = parse_url($DB_DSN);
-($GLOBALS['db_conn'] = mysql_connect($info['host'], $info['user'], $info['pass'])) || die(mysql_error());
-mysql_select_db(basename($info['path']), $GLOBALS['db_conn']) || die(mysql_error());
-unset($info);
-
-require_once '/var/www/oauth/library/OAuthStore.php';
-$store = OAuthStore::instance('MySQL', array('conn' => $GLOBALS['db_conn']));
+ * Dashboard display of OAuth information for TomSync
+ *
+ * Copyright 2012 Chris Tsonis <cgt212@whatbroke.com>
+ *
+ * This file is part of TomSync.
+ *
+ * TomSync is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TomSync is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with TomSync.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 require_once 'lib/init.php';

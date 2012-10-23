@@ -1,6 +1,11 @@
 Tomboy Sync Server
 
+Contains the OAuth and API server for tomboy to be able to sync to the web.  
+
+The OAuth library is a slightly modified version found here http://code.google.com/p/oauth-php/
+
 Installation
+------------
 
 1) Create a database using mysql, 
     mysql> CREATE DATABASE tomsync;
@@ -14,3 +19,11 @@ Installation
 class SiteConfig extends Config {
   // Put options here
 }
+
+In Progress
+-----------
+
+There is currently no way to view the notes online through a web browser.  The OAuth management 
+needs some work too, it is currently just barely good enough to get things working.  As a matter
+of fact, the entire web based portion is pretty much just working enough to get the API portion
+to work.
